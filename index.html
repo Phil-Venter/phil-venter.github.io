@@ -9,10 +9,16 @@
 	<script src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js" defer></script>
 	<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
-<body>
+<body x-data="cart">
 	<header aria-label="Site Header" class="border-b border-gray-100">
 		<div class="mx-auto flex h-16 max-w-screen-2xl items-center justify-between sm:px-6 lg:px-8" >
 			<div class="flex items-center gap-4">
+				<button type="button" class="p-2 lg:hidden">
+					<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" >
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+					</svg>
+				</button>
+
 				<a href="#" class="flex">
 					<span class="sr-only">Thee Attic</span>
 					<span class="inline-block h-10 w-40"><img src="logo.png" alt=""></span>
@@ -20,14 +26,81 @@
 			</div>
 
 			<div class="flex flex-1 items-center justify-end gap-8">
-				<nav aria-label="Site Nav" class="flex gap-4 text-xs font-bold uppercase tracking-wide text-gray-700">
-					<a href="/" class="block h-16 border-b-4 leading-[4rem] border-current text-cyan-900">Catalog</a>
-					<a href="/about.html" class="block h-16 border-b-4 border-transparent leading-[4rem] hover:border-current hover:text-cyan-900">About</a>
-					<a href="/contact.html" class="block h-16 border-b-4 border-transparent leading-[4rem] hover:border-current hover:text-cyan-900">Contact</a>
+				<nav aria-label="Site Nav" class="flex gap-4 text-xs font-bold tracking-wide text-gray-700">
+					<a href="/" class="block h-16 border-b-4 leading-[4rem] border-current text-cyan-900">CATALOG</a>
+					<a href="/about.html" class="block h-16 border-b-4 border-transparent leading-[4rem] hover:border-current hover:text-cyan-900">ABOUT</a>
+					<a href="/contact.html" class="block h-16 border-b-4 border-transparent leading-[4rem] hover:border-current hover:text-cyan-900">CONTACT</a>
+					<button class="block h-16 border-b-4 border-transparent leading-[4rem] hover:border-current hover:text-cyan-900" @click="cartOpen=true">CART</button>
 				</nav>
 			</div>
 		</div>
 	</header>
+
+	<div class="absolute top-2 right-2 w-screen max-w-sm border border-gray-100 rounded bg-white p-2 pt-2 sm:p-6 lg:p-8 z-50" aria-modal="true" role="dialog" tabindex="-1" x-show="cartOpen">
+		<div class="flex justify-between">
+			<strong>Welcome to your cart</strong>
+			<button class="-mr-1 ml-1.5 inline-block rounded-full bg-gray-200 p-0.5 text-gray-700 transition hover:text-gray-600" @click="cartOpen=false">
+				<span class="sr-only">Close cart</span>
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5" >
+					<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+				</svg>
+			</button>
+		</div>
+		<div class="mt-6 space-y-6">
+			<ul class="space-y-4">
+				<li class="flex flex-row gap-4 group text-gray-700" x-show="!cartCount">
+					We see your cart is empty, why not add a few items.
+				</li>
+				<template x-for="product in cart">
+					<li class="flex flex-row gap-4 group">
+						<img :src="product.image" :alt="product.sku" class="h-16 w-16 rounded object-cover flex-none" />
+						<div class="flex-auto">
+							<h3 class="text-sm text-gray-900" x-text="product.name"></h3>
+							<dl class="mt-0.5 space-y-px text-[10px] text-gray-600">
+								<div>
+									<dt class="inline">Size:</dt>
+									<dd class="inline" x-text="product.size"></dd>
+								</div>
+								<div>
+									<dt class="inline">Color:</dt>
+									<dd class="inline" x-text="product.color"></dd>
+								</div>
+							</dl>
+						</div>
+						<div class="relative w-5">
+							<button class="absolute top-0 right-0 rounded-full bg-red-100 text-red-500 flex-none hidden group-hover:block" @click="cartRemove(product.sku)">
+								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+								</svg>
+							</button>
+						</div>
+					</li>
+				</template>
+			</ul>
+		</div>
+		<div class="flex justify-end">
+			<span class="inline-flex items-center justify-between rounded-full bg-red-100 px-2.5 py-0.5 text-red-700 mt-4" x-show="cartCount">
+				<p class="text-sm whitespace-nowrap">Clear Cart</p>
+				<button class="-mr-1 ml-1.5 inline-block rounded-full bg-red-200 p-0.5 text-red-700 transition hover:text-red-600" @click="cartClear()">
+					<span class="sr-only">Clear Cart</span>
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+					</svg>
+				</button>
+			</span>
+		</div>
+		<div class="flex flex-col mt-4 items-end text-gray-700">
+			<div><strong>Subtotal</strong> <span x-text="`R ${cartSubtotal}.00`"></span></div>
+			<div><strong>Discount</strong> <span x-text="`R ${cartDiscount}.00`"></span></div>
+			<div class="text-cyan-900"><strong>Total</strong> <span x-text="`R ${cartTotal}.00`"></span></div>
+		</div>
+		<div class="flex justify-end">
+			<a :href="checkoutUrl" class="mt-4 bg-cyan-900 text-white py-2 px-8 font-medium rounded-xl hover:bg-cyan-700 transition-all duration-300 whitespace-nowrap" x-show="cartCount">
+				Cart Enquiry (Checkout)
+			</a>
+		</div>
+	</div>
+
 
 	<div role="alert" class="flex justify-between flex-col sm:flex-row border-l-4 border-cyan-500 bg-cyan-50 p-2 mt-3">
 		<b class="block font-medium text-cyan-800">Your loyalty matters to us.</b>
@@ -36,7 +109,7 @@
 		</p>
 	</div>
 
-	<section class="w-full flex flex-col sm:flex-row flex-1 my-3" x-data="catalog">
+	<x-catalog class="w-full flex flex-col sm:flex-row flex-1 my-3" x-data="catalog">
 		<article class="w-full sm:w-[30%] md:w-[20%] lg:w-[15%]">
 
 			<div class="flex flex-col leading-none text-xs mb-3 px-1 gap-1" x-show="activeCategory !== 'All' || activeGender !== 'All' || activeSize !== 'All' || activeColor !== 'All' || activeStyle !== 'All' || activeStyle !== 'All'">
@@ -280,21 +353,69 @@
 							<h3 class="mt-4 text-lg font-medium text-gray-900" x-text="product.name"></h3>
 							<div class="flex justify-between">
 								<p class="mt-1.5 text-sm text-gray-700 inline-block" x-text="product.price"></p>
-								<p class="mt-1.5 text-xs leading-5 text-gray-700 inline-block" x-text="product.sKU"></p>
+								<p class="mt-1.5 text-xs leading-5 text-gray-700 inline-block" x-text="product.sku"></p>
 							</div>
+							<button class="mt-4 bg-cyan-900 text-white py-2 px-8 font-medium rounded-xl hover:bg-cyan-700 transition-all duration-300 w-full" @click="cartAdd(product)">Add to Cart</button>
 						</div>
 					</div>
 				</template>
 			</div>
 		</article>
-	</section>
+	</x-catalog>
 
 	<footer class="text-center py-1.5 text-gray-500 mt-auto">
 		Copyright of Thee Attic &copy; 2021
 	</footer>
 
 	<script>
+		const isString = val => ({}).toString.call(val).match(/\s([a-zA-Z]+)/)[1].toLowerCase() === 'string';
+
+		let _email = 'theeattic@gmail.com';
+		let _subject = 'Thee Attic Enquiry';
+		let _greeting = 'Hello Thee Attic Ladies,';
+		let _listText = 'I am interested in the following items:';
+
 		document.addEventListener('alpine:init', () => {
+			Alpine.data('cart', () => ({
+				cartOpen: false,
+				cart: {},
+				cartCount: 0,
+				cartSubtotal: 0,
+				cartDiscount: 0,
+				cartTotal: 0,
+				checkoutUrl: '',
+
+				cartAdd(product) {
+					this.cart[product.sku] = product;
+					this.updateTotals();
+					this.updateMailto();
+				},
+				cartRemove(product) {
+					if (!isString(product)) {
+						product = product.sku;
+					}
+					delete this.cart[product];
+					this.updateTotals();
+					this.updateMailto();
+				},
+				cartClear() {
+					this.cart = {};
+					this.updateTotals();
+					this.updateMailto();
+				},
+
+				updateTotals() {
+					this.cartCount = Object.values(this.cart).length;
+					this.cartSubtotal = this.cartCount * 60;
+					this.cartDiscount = Math.floor(this.cartCount / 2) * 20;
+					this.cartTotal = this.cartSubtotal - this.cartDiscount;
+				},
+
+				updateMailto() {
+					this.checkoutUrl = `mailto:${_email}?subject=${_subject}&body=${_greeting}%0D%0A%0D%0A${_listText}%0D%0A-%20${Object.values(this.cart).map(product => product.sku).join(`%0D%0A-%20`)}%0D%0A%0D%0ASubtotal:%20R%20${this.cartSubtotal}.00%0D%0ADiscount:%20R%20${this.cartDiscount}.00%0D%0ATotal:%20R%20${this.cartTotal}.00`;
+				}
+			}));
+
 			Alpine.data('catalog', () => ({
 				products: [],
 

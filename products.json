@@ -2,7 +2,7 @@
 	"image": "/images/001.jpg",
 	"name": "Floral Blue Dress Shirt",
 	"price": "R 60.00",
-	"sKU": "TOP001",
+	"sku": "TOP001",
 	"category": "Tops",
 	"gender": "Male",
 	"size": "Medium",
@@ -13,7 +13,7 @@
 	"image": "/images/002.jpg",
 	"name": "Black Logo T-Shirt",
 	"price": "R 60.00",
-	"sKU": "TOP002",
+	"sku": "TOP002",
 	"category": "Tops",
 	"gender": "Unisex",
 	"size": "Large",
@@ -21,10 +21,21 @@
 	"material": "Cotton",
 	"style": "Streetwear"
 },{
+	"image": "/images/BOT001.jpg",
+	"name": "Blue Jeans",
+	"price": "R 60.00",
+	"sku": "BOT001",
+	"category": "Bottoms",
+	"gender": "Unisex",
+	"size": "Medium",
+	"color": "Blue",
+	"material": "Jeans",
+	"style": "Streetwear"
+},{
 	"image": "/images/003.jpg",
 	"name": "Grey and White Polo Shirt",
 	"price": "R 60.00",
-	"sKU": "TOP003",
+	"sku": "TOP003",
 	"category": "Tops",
 	"gender": "Unisex",
 	"size": "Small",
@@ -35,11 +46,11 @@
 	"image": "/images/004.jpg",
 	"name": "Brown Bomber Jacket",
 	"price": "R 60.00",
-	"sKU": "TOP004",
+	"sku": "TOP004",
 	"category": "Tops",
 	"gender": "Female",
 	"size": "Medium",
 	"color": "Brown",
 	"material": "Leather",
-	"style": "Streetwear"
+	"style": "Industrial"
 }]
